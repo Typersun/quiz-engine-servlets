@@ -2,6 +2,8 @@ package repositories;
 
 import models.Quiz;
 
-public interface QuizRepository extends CrudRepository<Quiz> {
+import java.util.Optional;
 
+public interface QuizRepository extends CrudRepository<Quiz> {
+    Optional<Quiz> findByName(String name);
 }

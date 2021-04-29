@@ -82,12 +82,12 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     public List<Question> findAll() {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM question LEFT JOIN quiz qz on question.quiz_id = qz.id;");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM question LEFT JOIN quiz AS qz on question.quiz_id = qz.id;");
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Question> questions = new ArrayList<>();
             while (resultSet.next()) {
                 Quiz quiz = Quiz.builder()
-                        .id(resultSet.getInt("qz.id"))
+                        .id(resultSet.getInt("quiz_id"))
                         .name(resultSet.getString("name"))
                         .build();
                 questions.add(Question.builder()

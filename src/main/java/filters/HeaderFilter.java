@@ -1,8 +1,10 @@
 package filters;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
+@WebFilter("/*")
 public class HeaderFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException { }

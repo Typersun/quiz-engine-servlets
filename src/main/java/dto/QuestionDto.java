@@ -2,12 +2,13 @@ package dto;
 
 import lombok.*;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+@Builder
+public class QuestionDto {
     private int id;
-    private String username;
+    private String text;
+    private String quizName;
 }

@@ -2,9 +2,7 @@ package repositories.impl;
 
 import models.Question;
 import models.QuestionOption;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import repositories.QuestionOptionRepository;
-import repositories.QuestionRepository;
 import utils.DbConnectionFactory;
 
 import java.sql.Connection;
