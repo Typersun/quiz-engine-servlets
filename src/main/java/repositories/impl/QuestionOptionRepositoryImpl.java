@@ -34,7 +34,11 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
     public Optional<QuestionOption> findById(int id) {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM question_option LEFT JOIN question q on question_option.question_id = q.id WHERE question_option.id = ?;");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.id as \"q.id\",\n" +
+                    "       q.text as \"q.text\",\n" +
+                    "       qo.text as \"text\", qo.id as \"qo.id\",\n" +
+                    "       qo.is_correct as \"is_correct\"\n" +
+                    "FROM question_option qo LEFT JOIN question q on qo.question_id = q.id WHERE qo.id = ?;");
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -43,6 +47,7 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
                         .text(resultSet.getString("q.text"))
                         .build();
                 return Optional.of(QuestionOption.builder()
+                        .id(resultSet.getInt("qo.id"))
                         .text(resultSet.getString("text"))
                         .isCorrect(resultSet.getBoolean("is_correct"))
                         .question(question)
@@ -60,11 +65,11 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
     public void update(QuestionOption entity) {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE question_option SET text = ?, is_correct = ? WHERE id = ?;");
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE question_option SET text = ?, is_correct = ?, question_id = ? WHERE id = ?;");
             preparedStatement.setString(1, entity.getText());
-            Question question = entity.getQuestion();
-            preparedStatement.setInt(2, question.getId());
-            preparedStatement.setInt(3, entity.getId());
+            preparedStatement.setBoolean(2, entity.isCorrect());
+            preparedStatement.setInt(3, entity.getQuestion().getId());
+            preparedStatement.setInt(4, entity.getId());
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -88,7 +93,15 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
     public List<QuestionOption> findAll() {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM question_option LEFT JOIN question q on question_option.question_id = q.id;");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT qo.id as \"qo.id\",\n" +
+                    "       qo.text as \"qo.text\",\n" +
+                    "       qo.is_correct as \"is_correct\",\n" +
+                    "       q.id as \"q.id\",\n" +
+                    "       q.text as \"q.text\",\n" +
+                    "       q.quiz_id as \"quiz_id\" \n" +
+                    "       FROM question_option qo\n" +
+                    "    LEFT JOIN question q\n" +
+                    "        on qo.question_id = q.id;");
             ResultSet resultSet = preparedStatement.executeQuery();
             List<QuestionOption> questionOptions = new ArrayList<>();
             while (resultSet.next()) {
@@ -97,8 +110,8 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
                         .text(resultSet.getString("q.text"))
                         .build();
                 questionOptions.add(QuestionOption.builder()
-                        .id(resultSet.getInt("id"))
-                        .text(resultSet.getString("text"))
+                        .id(resultSet.getInt("qo.id"))
+                        .text(resultSet.getString("qo.text"))
                         .isCorrect(resultSet.getBoolean("is_correct"))
                         .question(question)
                         .build());
@@ -109,5 +122,35 @@ public class QuestionOptionRepositoryImpl implements QuestionOptionRepository {
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public Optional<QuestionOption> findByText(String text) {
+        Connection connection = DbConnectionFactory.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.id as \"q.id\",\n" +
+                    "       q.text as \"q.text\",\n" +
+                    "       qo.text as \"text\", qo.id as \"qo.id\",\n" +
+                    "       qo.is_correct as \"is_correct\"\n" +
+                    "FROM question_option qo LEFT JOIN question q on qo.question_id = q.id WHERE qo.text = ?;");
+            preparedStatement.setString(1, text);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Question question = Question.builder()
+                        .id(resultSet.getInt("q.id"))
+                        .text(resultSet.getString("q.text"))
+                        .build();
+                return Optional.of(QuestionOption.builder()
+                        .id(resultSet.getInt("qo.id"))
+                        .text(resultSet.getString("text"))
+                        .isCorrect(resultSet.getBoolean("is_correct"))
+                        .question(question)
+                        .build());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 }

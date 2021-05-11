@@ -11,10 +11,10 @@ import repositories.QuestionRepository;
 import repositories.UserRepository;
 import utils.DbConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +25,16 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public void save(Answer entity) {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO answer(question_id, question_option_id, user_id) VALUES (?, ?, ?);");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO answer(question_id, question_option_id, user_id, time) VALUES (?, ?, ?, ?);");
             Question question = entity.getQuestion();
             QuestionOption questionOption = entity.getQuestionOption();
             User user = entity.getAuthor();
             preparedStatement.setInt(1, question.getId());
             preparedStatement.setInt(2, questionOption.getId());
             preparedStatement.setInt(3, user.getId());
+            LocalDateTime localDateTime = LocalDateTime.now();
+            Timestamp timestamp = Timestamp.valueOf(localDateTime);
+            preparedStatement.setTimestamp(4, timestamp);
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -42,13 +45,21 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public Optional<Answer> findById(int id) {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM answer\n" +
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT question.id as \"q.id\",\n" +
+                    "       question.text as \"q.text\",\n" +
+                    "       qo.id as \"qo.id\",\n" +
+                    "       qo.text as \"qo.text\",\n" +
+                    "       qo.is_correct as \"is_correct\",\n" +
+                    "       u.id as \"u.id\",\n" +
+                    "       u.username as \"username\",\n" +
+                    "       u.password as \"password\",\n" +
+                    "       answer.id as \"answer.id\"\n" +
+                    "       FROM answer\n" +
                     "LEFT JOIN question\n" +
                     "on answer.question_id = question.id\n" +
                     "LEFT JOIN question_option qo\n" +
                     "on answer.question_id = qo.id\n" +
-                    "LEFT JOIN \"user\" u on answer.user_id = u.id\n" +
-                    "WHERE answer.id = ?");
+                    "LEFT JOIN \"user\" u on answer.user_id = u.id WHERE answer.id = ?;");
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -115,7 +126,16 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public List<Answer> findAll() {
         Connection connection = DbConnectionFactory.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM answer\n" +
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT question.id as \"q.id\",\n" +
+                    "       question.text as \"q.text\",\n" +
+                    "       qo.id as \"qo.id\",\n" +
+                    "       qo.text as \"qo.text\",\n" +
+                    "       qo.is_correct as \"is_correct\",\n" +
+                    "       u.id as \"u.id\",\n" +
+                    "       u.username as \"username\",\n" +
+                    "       u.password as \"password\",\n" +
+                    "       answer.id as \"answer.id\"\n" +
+                    "       FROM answer\n" +
                     "LEFT JOIN question\n" +
                     "on answer.question_id = question.id\n" +
                     "LEFT JOIN question_option qo\n" +
@@ -145,9 +165,10 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                         .author(user)
                         .build());
             }
+            return answers;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 }

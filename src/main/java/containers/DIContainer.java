@@ -2,16 +2,9 @@ package containers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import repositories.QuestionRepository;
-import repositories.QuizRepository;
-import repositories.UserRepository;
-import repositories.impl.QuestionRepositoryImpl;
-import repositories.impl.QuizRepositoryImpl;
-import repositories.impl.UserRepositoryImpl;
-import services.QuestionService;
-import services.QuizService;
-import services.UserSecurityService;
-import services.UserService;
+import repositories.*;
+import repositories.impl.*;
+import services.*;
 import services.impl.*;
 import utils.JwtHelper;
 
@@ -29,6 +22,10 @@ public class DIContainer {
     private final UserSecurityService userSecurityService = new UserSecurityServiceImpl(userRepository, jwtHelper, validator);
     private final QuizService quizService = new QuizServiceImpl(quizRepository, userRepository);
     private final QuestionService questionService = new QuestionServiceImpl(questionRepository, quizRepository);
+    private final QuestionOptionRepository questionOptionRepository = new QuestionOptionRepositoryImpl();
+    private final QuestionOptionService questionOptionService = new QuestionOptionServiceImpl(questionOptionRepository, questionRepository);
+    private final AnswerRepository answerRepository = new AnswerRepositoryImpl();
+    private final AnswerService answerService = new AnswerServiceImpl(answerRepository, questionRepository, questionOptionRepository, userRepository);
 
     private DIContainer() {}
 }

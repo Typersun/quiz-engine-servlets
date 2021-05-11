@@ -39,7 +39,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Quiz quiz = Quiz.builder()
-                        .id(resultSet.getInt("qz.id"))
+                        .id(resultSet.getInt("quiz_id"))
                         .name(resultSet.getString("name"))
                         .build();
                 return Optional.of(Question.builder()
@@ -61,6 +61,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE question SET text = ? WHERE id = ?;");
             preparedStatement.setString(1, entity.getText());
             preparedStatement.setInt(2, entity.getId());
+            preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -101,5 +102,29 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             throwables.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public Optional<Question> findByText(String text) {
+        Connection connection = DbConnectionFactory.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM question LEFT JOIN quiz qz on question.quiz_id = qz.id WHERE question.text = ?;");
+            preparedStatement.setString(1, text);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Quiz quiz = Quiz.builder()
+                        .id(resultSet.getInt("quiz_id"))
+                        .name(resultSet.getString("name"))
+                        .build();
+                return Optional.of(Question.builder()
+                        .id(resultSet.getInt("id"))
+                        .text(resultSet.getString("text"))
+                        .quiz(quiz)
+                        .build());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return Optional.empty();
     }
 }
