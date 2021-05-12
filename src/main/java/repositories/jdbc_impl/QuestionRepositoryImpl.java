@@ -1,9 +1,8 @@
-package repositories.impl;
+package repositories.jdbc_impl;
 
 import models.Question;
 import models.Quiz;
 import repositories.QuestionRepository;
-import repositories.QuizRepository;
 import utils.DbConnectionFactory;
 
 import java.sql.Connection;

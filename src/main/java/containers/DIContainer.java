@@ -3,19 +3,23 @@ package containers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import repositories.*;
-import repositories.impl.*;
+import repositories.hibernate_impl.UserRepositoryHibernateImpl;
+import repositories.jdbc_impl.*;
 import services.*;
 import services.impl.*;
 import utils.JwtHelper;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+
 @Getter
 public class DIContainer {
     public static DIContainer instance = new DIContainer();
-
+    private final EntityManager entityManager = Persistence.createEntityManagerFactory("Tikrisa").createEntityManager();
     private final QuizRepository quizRepository = new QuizRepositoryImpl();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final QuestionRepository questionRepository = new QuestionRepositoryImpl();
-    private final UserRepository userRepository = new UserRepositoryImpl();
+    private final UserRepository userRepository = new UserRepositoryHibernateImpl(entityManager);
     private final UserService userService = new UserServiceImpl(userRepository);
     private final JwtHelper jwtHelper = new JwtHelper();
     private final Validator validator = new Validator(userRepository);
@@ -26,6 +30,7 @@ public class DIContainer {
     private final QuestionOptionService questionOptionService = new QuestionOptionServiceImpl(questionOptionRepository, questionRepository);
     private final AnswerRepository answerRepository = new AnswerRepositoryImpl();
     private final AnswerService answerService = new AnswerServiceImpl(answerRepository, questionRepository, questionOptionRepository, userRepository);
+
 
     private DIContainer() {}
 }

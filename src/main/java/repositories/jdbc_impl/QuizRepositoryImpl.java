@@ -1,4 +1,4 @@
-package repositories.impl;
+package repositories.jdbc_impl;
 
 import models.Quiz;
 import models.User;

@@ -1,20 +1,14 @@
-package repositories.impl;
+package repositories.jdbc_impl;
 
-import exceptions.NotFoundException;
 import models.Answer;
 import models.Question;
 import models.QuestionOption;
 import models.User;
 import repositories.AnswerRepository;
-import repositories.QuestionOptionRepository;
-import repositories.QuestionRepository;
-import repositories.UserRepository;
 import utils.DbConnectionFactory;
 
 import java.sql.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

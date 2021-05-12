@@ -1,4 +1,4 @@
-package repositories.impl;
+package repositories.jdbc_impl;
 
 import models.Question;
 import models.QuestionOption;

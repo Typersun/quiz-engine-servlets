@@ -1,4 +1,4 @@
-package repositories.impl;
+package repositories.jdbc_impl;
 
 import models.User;
 import repositories.UserRepository;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryJdbcImpl implements UserRepository {
     @Override
     public void save(User entity) {
         Connection connection = DbConnectionFactory.getConnection();
