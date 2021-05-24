@@ -3,6 +3,7 @@ package models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -17,10 +18,11 @@ public class QuestionOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @Column(nullable = false)
+    @Size(min = 1, max = 100)
     private String text;
 
-    @Column
+    @Column(nullable = false)
     private boolean isCorrect;
 
     @ManyToOne

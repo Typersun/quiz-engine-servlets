@@ -16,15 +16,15 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @ManyToOne()
-    @JoinColumn(name = "question_option_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_option_id", nullable = false)
     private QuestionOption questionOption;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User author;
 }
