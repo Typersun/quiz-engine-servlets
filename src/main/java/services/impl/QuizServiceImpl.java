@@ -52,7 +52,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(int id) throws NotFoundException {
         quizRepository.deleteById(id);
     }
 

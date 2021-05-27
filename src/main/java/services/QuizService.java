@@ -9,6 +9,6 @@ public interface QuizService {
     void save(QuizDto entity);
     QuizDto findById(int id) throws NotFoundException;
     void update(QuizDto entity);
-    void deleteById(int id);
+    void deleteById(int id) throws NotFoundException;
     List<QuizDto> findAll() throws NotFoundException;
 }

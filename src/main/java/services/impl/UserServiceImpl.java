@@ -43,7 +43,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(int id) {
-        userRepository.deleteById(id);
+        try {
+            userRepository.deleteById(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 

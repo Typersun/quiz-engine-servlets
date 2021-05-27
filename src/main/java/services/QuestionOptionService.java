@@ -10,6 +10,6 @@ public interface QuestionOptionService {
     void save(QuestionOptionDto entity);
     QuestionOptionDto findById(int id) throws NotFoundException;
     void update (QuestionOptionDto entity);
-    void deleteById(int id);
+    void deleteById(int id) throws NotFoundException;
     List<QuestionOptionDto> findAll() throws NotFoundException;
 }

@@ -6,6 +6,7 @@ import dto.TokenDto;
 import dto.errors.ErrorEntity;
 import exceptions.QuizEngineException;
 import lombok.AllArgsConstructor;
+import models.Profile;
 import models.User;
 import repositories.UserRepository;
 import services.UserSecurityService;
@@ -27,7 +28,9 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         }
         User user = User.builder()
                 .username(entity.getUsername())
+                .email(entity.getEmail())
                 .password(entity.getPassword())
+                .profile(new Profile())
                 .build();
         userRepository.save(user);
         return new TokenDto(jwtHelper.generateToken(user));

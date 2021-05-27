@@ -54,7 +54,7 @@ public class QuestionOptionServiceImpl implements QuestionOptionService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(int id) throws NotFoundException {
         questionOptionRepository.deleteById(id);
     }
 

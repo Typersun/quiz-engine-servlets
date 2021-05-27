@@ -1,53 +1,75 @@
 package repositories.hibernate_impl;
 
-import lombok.AllArgsConstructor;
+import models.Profile;
 import models.User;
 import repositories.UserRepository;
 
-
 import javax.persistence.EntityManager;
-import java.util.List;
+import javax.persistence.NoResultException;
 import java.util.Optional;
 
-@AllArgsConstructor
-public class UserRepositoryHibernateImpl implements UserRepository {
-    private final EntityManager entityManager;
+public class UserRepositoryHibernateImpl extends GenericCrudImpl<User> implements UserRepository {
 
-    @Override
-    public void save(User entity) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+
+    public UserRepositoryHibernateImpl(Class<User> entityClass, EntityManager entityManager) {
+        super(entityClass, entityManager);
     }
+
     @Override
     public Optional<User> findOneByUsername(String username) {
-
-
-        return Optional.empty();
+        try {
+            return Optional.of(entityManager.createQuery("SELECT u FROM User u WHERE u.username = :value", User.class)
+                    .setParameter("value", username)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void updateWithoutPassword(User entity) {
+        User user = entityManager.createQuery("select u from User u where u.id = :id", User.class).setParameter("id", entity.getId()).getSingleResult();
+        entityManager.getTransaction().begin();
+        user.setUsername(entity.getUsername());
+        entityManager.merge(user);
+        entityManager.getTransaction().commit();
+    }
+
+    public Optional<User> findOneByEmail(String email) {
+        try {
+            return Optional.of(entityManager.createQuery("SELECT u FROM User u WHERE u.email = :value", User.class)
+                    .setParameter("value", email)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> isFileExist(String filename) {
+        Optional<User> user = Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u where u.profile.avatarName = :value", User.class)
+                .setParameter("value", filename)
+                .getResultList().stream().findFirst().orElse(null));
+        return user;
+
 
     }
 
     @Override
-    public Optional<User> findById(int id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void update(User entity) {
-
-    }
-
-    @Override
-    public void deleteById(int id) {
+    public void saveAvatarByUserId(String uuid, int id) {
+       User user = findById(id).get();
+       entityManager.getTransaction().begin();
+       user.getProfile().setAvatarName(uuid);
+       entityManager.merge(user);
+       entityManager.getTransaction().commit();
 
     }
 
     @Override
-    public List<User> findAll() {
-        return null;
+    public Optional<String> isUserAlreadyHaveAvatar(int id) {
+        return Optional.ofNullable(entityManager.createQuery("SELECT u.profile.avatarName FROM User u WHERE u.id = :value", String.class)
+                .setParameter("value", id).getSingleResult());
     }
+
+
 }

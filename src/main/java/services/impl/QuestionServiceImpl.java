@@ -53,7 +53,11 @@ public class QuestionServiceImpl implements QuestionService {    // ༼ つ ◕_
 
     @Override
     public void deleteById(int id) {
-        questionRepository.deleteById(id);
+        try {
+            questionRepository.deleteById(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -39,9 +39,9 @@ public class JwtFilter implements Filter {
         }
         String token = jwtHelper.getTokenFromRequest(httpServletRequest);
         if (token != null && jwtHelper.validateToken(token)) {
-            String username = jwtHelper.getUsernameFromToken(token);
+            String email = jwtHelper.getEmailFromToken(token);
             String password = jwtHelper.getPasswordFromToken(token);
-            Optional<User> optionalUser = userRepository.findOneByUsername(username);
+            Optional<User> optionalUser = userRepository.findOneByEmail(email);
             if(optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
                 httpServletRequest.getSession().setAttribute("user", optionalUser.get());
                 filterChain.doFilter(httpServletRequest, response);

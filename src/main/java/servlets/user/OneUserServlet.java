@@ -5,6 +5,7 @@ import containers.DIContainer;
 import dto.MessageDto;
 import dto.UserDto;
 import exceptions.NotFoundException;
+import models.User;
 import repositories.UserRepository;
 import services.UserService;
 import services.impl.UserServiceImpl;
@@ -44,6 +45,12 @@ public class OneUserServlet extends HttpServlet {
         try {
             UserDto userDto = objectMapper.readValue(request.getReader(), UserDto.class);
             userDto.setId(Integer.parseInt(request.getPathInfo().substring(1)));
+            User user = (User) request.getSession().getAttribute("user");
+            if (userDto.getId() != user.getId()) {
+                String json = objectMapper.writeValueAsString(new MessageDto("Forbidden"));
+                response.getWriter().print(json);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            }
             userService.update(userDto);
         } catch (Exception e) {
             String json = objectMapper.writeValueAsString(new MessageDto("Wrong request"));

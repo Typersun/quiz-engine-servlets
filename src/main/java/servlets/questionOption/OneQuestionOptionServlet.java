@@ -46,7 +46,11 @@ public class OneQuestionOptionServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getPathInfo().substring(1));
-        questionOptionService.deleteById(id);
+        try {
+            questionOptionService.deleteById(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

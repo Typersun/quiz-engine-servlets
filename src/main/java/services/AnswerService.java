@@ -9,6 +9,6 @@ public interface AnswerService {
     void save(AnswerDto entity);
     AnswerDto findById(int id) throws NotFoundException;
     void update(AnswerDto entity);
-    void deleteById(int id);
+    void deleteById(int id) throws NotFoundException;
     List<AnswerDto> findAll() throws NotFoundException;
 }

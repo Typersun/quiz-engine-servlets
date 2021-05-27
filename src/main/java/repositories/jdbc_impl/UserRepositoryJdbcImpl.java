@@ -93,6 +93,27 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findOneByEmail(String email) {
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> isFileExist(String filename) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void saveAvatarByUserId(String uuid, int id) {
+
+    }
+
+    @Override
+    public Optional<String> isUserAlreadyHaveAvatar(int id) {
+        return Optional.empty();
+    }
+
+    @Override
     public void deleteById(int id) {
         Connection connection = DbConnectionFactory.getConnection();
         try {

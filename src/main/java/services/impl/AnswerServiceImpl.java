@@ -54,7 +54,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(int id) throws NotFoundException {
         answerRepository.deleteById(id);
     }
 

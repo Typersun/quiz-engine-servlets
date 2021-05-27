@@ -2,6 +2,7 @@ package containers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import models.User;
 import repositories.*;
 import repositories.hibernate_impl.UserRepositoryHibernateImpl;
 import repositories.jdbc_impl.*;
@@ -19,7 +20,7 @@ public class DIContainer {
     private final QuizRepository quizRepository = new QuizRepositoryImpl();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final QuestionRepository questionRepository = new QuestionRepositoryImpl();
-    private final UserRepository userRepository = new UserRepositoryHibernateImpl(entityManager);
+    private final UserRepository userRepository = new UserRepositoryHibernateImpl(User.class, entityManager);
     private final UserService userService = new UserServiceImpl(userRepository);
     private final JwtHelper jwtHelper = new JwtHelper();
     private final Validator validator = new Validator(userRepository);
@@ -30,6 +31,7 @@ public class DIContainer {
     private final QuestionOptionService questionOptionService = new QuestionOptionServiceImpl(questionOptionRepository, questionRepository);
     private final AnswerRepository answerRepository = new AnswerRepositoryImpl();
     private final AnswerService answerService = new AnswerServiceImpl(answerRepository, questionRepository, questionOptionRepository, userRepository);
+    private final ProfileService profileService = new ProfileServiceImpl(userRepository);
 
 
     private DIContainer() {}

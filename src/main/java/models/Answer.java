@@ -27,4 +27,8 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
+
+    @ManyToOne
+    @JoinColumn(name = "result_id", nullable = false)
+    private Result result;
 }

@@ -50,6 +50,10 @@ public class OneAnswerServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getPathInfo().substring(1));
-        answerService.deleteById(id);
+        try {
+            answerService.deleteById(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

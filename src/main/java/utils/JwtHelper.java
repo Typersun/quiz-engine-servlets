@@ -16,7 +16,7 @@ public class JwtHelper {
 
     public String generateToken(User user) {
         Claims claims = Jwts.claims();
-        claims.put("username", user.getUsername());
+        claims.put("email", user.getEmail());
         claims.put("password", user.getPassword());
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,9 +42,9 @@ public class JwtHelper {
         return false;
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return (String) claims.get("username");
+        return (String) claims.get("email");
     }
 
     public String getPasswordFromToken(String token) {

@@ -5,10 +5,7 @@ import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +22,7 @@ public class Result {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "result", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>();
 
     @Getter
@@ -44,7 +41,7 @@ public class Result {
     @Temporal(TemporalType.DATE)
     @Column(insertable = false, updatable = false, name = "date_pass")
     @org.hibernate.annotations.Generated(GenerationTime.ALWAYS)
-    private LocalDate dateOfPass;
+    private Date dateOfPass;
 
     public int getQuestionsAmount() {
         return answers.size();

@@ -47,7 +47,11 @@ public class OneQuizServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getPathInfo().substring(1));
-        quizService.deleteById(id);
+        try {
+            quizService.deleteById(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
